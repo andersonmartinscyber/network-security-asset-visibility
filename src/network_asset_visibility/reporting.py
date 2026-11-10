@@ -1,10 +1,17 @@
+
+"""Security metrics and JSON reporting."""
+
 import json
 from collections import Counter
 from pathlib import Path
 
+from network_asset_visibility.coverage import (
+    analyze_configuration_coverage,
+)
 
-def generate_security_metrics(assets, findings):
-    """Generate metrics from an inventory and security findings."""
+
+def generate_security_metrics(assets, findings, configs=None):
+    """Generate metrics from inventory, findings, and optional configs."""
 
     asset_ids = {asset["asset_id"] for asset in assets}
 
@@ -29,7 +36,7 @@ def generate_security_metrics(assets, findings):
         finding["rule_id"] for finding in findings
     )
 
-    return {
+    metrics = {
         "total_assets": len(assets),
         "affected_assets": len(affected_assets),
         "total_findings": len(findings),
@@ -37,11 +44,27 @@ def generate_security_metrics(assets, findings):
         "findings_by_rule": dict(rule_counts),
     }
 
+    if configs is not None:
+        metrics["configuration_coverage"] = (
+            analyze_configuration_coverage(assets, configs)
+        )
 
-def export_security_report(assets, findings, output_path):
+    return metrics
+
+
+def export_security_report(
+    assets,
+    findings,
+    output_path,
+    configs=None,
+):
     """Export security metrics and findings to a JSON file."""
 
-    metrics = generate_security_metrics(assets, findings)
+    metrics = generate_security_metrics(
+        assets,
+        findings,
+        configs=configs,
+    )
 
     report = {
         "project": "Network Security & Asset Visibility",
