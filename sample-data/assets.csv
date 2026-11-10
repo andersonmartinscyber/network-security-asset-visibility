@@ -1,0 +1,6 @@
+﻿asset_id,hostname,ip_address,vendor,device_type,criticality
+NET-SW-001,CORE-SW-01,192.0.2.10,Cisco,switch,critical
+NET-SW-002,ACCESS-SW-01,192.0.2.11,Cisco,switch,medium
+NET-FW-001,EDGE-FW-01,192.0.2.20,Fortinet,firewall,critical
+NET-RT-001,BRANCH-RT-01,192.0.2.30,MikroTik,router,high
+NET-SRV-001,MONITOR-SRV-01,192.0.2.40,Linux,server,high
