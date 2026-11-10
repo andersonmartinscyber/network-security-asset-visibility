@@ -1,26 +1,27 @@
 # Network Security & Asset Visibility
 
-**Python-based Network Security Engineering | Asset Inventory | Security Configuration Assessment**
+**Python-based Network Security Engineering | Asset Inventory | Security Configuration Assessment | Security Metrics & JSON Reporting**
 
-A Security Engineering portfolio project designed to demonstrate how structured network asset information can support infrastructure visibility, security configuration assessment, and risk-informed decision-making.
+A Security Engineering portfolio project demonstrating how structured network asset information can support infrastructure visibility, security configuration assessment, measurable security indicators, and risk-informed decision-making.
 
-> **Project status:** Milestone 02 — Implementation and automated tests validated. Documentation and Git consolidation in progress.
+> **Project status:** Milestones 01 and 02 completed and integrated into `main`. Milestone 03 — Security Metrics & JSON Reporting — implementation and automated tests validated. Documentation and Git consolidation in progress.
 
 ## 1. Project Overview
 
 Network infrastructure security depends on understanding which assets exist, their business criticality, and whether their management configurations follow appropriate security practices.
 
-This project provides an extensible Python-based foundation for network asset inventory and rule-based security assessment.
+This project provides an extensible Python-based foundation for network asset inventory, rule-based security assessment, and structured security reporting.
 
-The current implementation processes synthetic CSV datasets, validates asset information, evaluates declared security configurations, and generates structured findings.
+The current implementation processes synthetic CSV datasets, validates asset information, evaluates declared security configurations, generates structured findings, calculates security metrics, and exports JSON reports.
 
 **Key objectives:**
 
 - Establish a consistent and validated network asset inventory.
 - Identify potentially insecure network management configurations.
 - Associate security findings with asset context and criticality.
-- Support reproducible security assessments using automated tests.
-- Prepare a foundation for security reporting, visualization, and authorized network discovery.
+- Generate measurable security indicators for technical and management reporting.
+- Support reproducible security assessments through automated testing.
+- Prepare a foundation for dashboards, contextual risk analysis, and authorized network discovery.
 
 ## 2. Current Features
 
@@ -42,22 +43,38 @@ The current implementation processes synthetic CSV datasets, validates asset inf
 - Identification of high- and critical-priority assets without monitoring.
 - Structured findings containing asset ID, hostname, rule ID, severity, and asset criticality.
 
+### Security Metrics & JSON Reporting
+
+- Aggregated security metrics by severity and assessment rule.
+- Unique affected asset counting.
+- Total asset and finding counts.
+- Validation of finding-to-asset references.
+- Detection of duplicate asset IDs during metric generation.
+- Structured JSON export of metrics and findings.
+- Explicit identification of synthetic laboratory data in exported reports.
+- Automated reporting tests.
+
 ### Automated Validation
 
-- 17 Python unit tests.
-- Tests for invalid input and malformed CSV data.
-- Tests for duplicate records.
-- Tests for individual security assessment rules.
-- Tests for secure configurations and unknown assets.
+- **25 Python unit tests passing.**
+- Inventory validation tests.
+- Security configuration and assessment tests.
+- Reporting and metric aggregation tests.
+- Invalid input and duplicate record tests.
+- Empty dataset and unknown asset tests.
+- JSON export and data consistency tests.
 
 ## 3. Architecture
 
-The current processing workflow consists of four stages:
+![Security Reporting Workflow](docs/images/reporting-flow.png)
+
+The current processing workflow consists of five stages:
 
 1. **Asset Inventory:** Load and validate the network asset dataset.
 2. **Security Configuration:** Load and validate declared management settings.
 3. **Assessment Engine:** Evaluate security rules and associate findings with known assets.
-4. **Results:** Produce structured findings for analysis and future reporting.
+4. **Metrics Aggregation:** Calculate asset coverage indicators and finding distributions.
+5. **JSON Reporting:** Export structured security metrics and findings.
 
 The current implementation runs locally without a database, network scanner, or external service.
 
@@ -67,15 +84,18 @@ The current implementation runs locally without a database, network scanner, or 
 
 *Project directory organization, including source modules, automated tests, documentation, and synthetic laboratory data.*
 
+The project structure image illustrates the repository organization. The reporting module and its tests were added during Milestone 03 and should be reflected in the next revision of this image.
+
 ## 5. Technology Stack
 
 | Technology | Purpose |
 |---|---|
 | Python 3.14 | Core application development |
-| Python Standard Library | CSV processing, IP validation, and data analysis |
+| Python Standard Library | CSV processing, IP validation, metric aggregation, and JSON export |
 | unittest | Automated testing |
 | Git | Version control |
 | PowerShell | Local development and test execution |
+| JSON | Structured security report output |
 
 No third-party Python packages are required by the current implementation.
 
@@ -116,18 +136,29 @@ $env:PYTHONPATH = (Resolve-Path .\src).Path
 From the project root:
 
 ```powershell
+$env:PYTHONPATH = (Resolve-Path .\src).Path
+
 python -m unittest discover -s tests -v
 ```
 
 **Latest validated execution:**
 
 ```text
-Ran 17 tests
+Ran 25 tests
 
 OK
 ```
 
-All 17 tests passed in the latest local validation.
+All 25 tests passed in the latest local validation.
+
+The suite includes:
+
+| Test Module | Passing Tests |
+|---|---:|
+| `test_inventory.py` | 5 |
+| `test_security_assessment.py` | 12 |
+| `test_reporting.py` | 8 |
+| **Total** | **25** |
 
 ## 8. Running the Security Assessment
 
@@ -179,7 +210,81 @@ SSH being disabled is treated as a configuration review indicator, not proof tha
 
 For rule descriptions, recommendations, and limitations, see [Security Assessment Documentation](docs/SECURITY_ASSESSMENT.md).
 
-## 10. Laboratory Validation Results
+## 10. Generating Security Metrics & JSON Reports
+
+The reporting module transforms the asset inventory and assessment findings into aggregated security indicators.
+
+### Generated Metrics
+
+| Metric | Description |
+|---|---|
+| `total_assets` | Total assets in the validated inventory |
+| `affected_assets` | Number of unique assets associated with findings |
+| `total_findings` | Total number of security findings |
+| `findings_by_severity` | Finding counts grouped by severity |
+| `findings_by_rule` | Finding counts grouped by assessment rule |
+
+### Generate a JSON Report
+
+Run the following command from the project root:
+
+```powershell
+$env:PYTHONPATH = (Resolve-Path .\src).Path
+
+@'
+from network_asset_visibility.inventory import load_inventory
+from network_asset_visibility.security_assessment import (
+    load_security_config,
+    assess_security,
+)
+from network_asset_visibility.reporting import (
+    export_security_report,
+)
+
+assets = load_inventory("sample-data/assets.csv")
+configs = load_security_config("sample-data/security_config.csv")
+
+findings = assess_security(assets, configs)
+
+report = export_security_report(
+    assets,
+    findings,
+    "security-report.json",
+)
+
+print(report["metrics"])
+'@ | python -
+```
+
+The command generates `security-report.json` in the project root.
+
+This generated report is excluded from Git version control through `.gitignore`.
+
+### Example Metrics
+
+```json
+{
+  "total_assets": 5,
+  "affected_assets": 2,
+  "total_findings": 6,
+  "findings_by_severity": {
+    "high": 5,
+    "medium": 1
+  },
+  "findings_by_rule": {
+    "NET-001": 2,
+    "NET-002": 2,
+    "NET-003": 1,
+    "NET-004": 1
+  }
+}
+```
+
+These metrics are part of a larger JSON report containing project identification, data source classification, and individual findings.
+
+For implementation details, test coverage, and limitations, see [Security Reporting Documentation](docs/SECURITY_REPORTING.md).
+
+## 11. Laboratory Validation Results
 
 The current synthetic laboratory dataset includes five network assets.
 
@@ -190,13 +295,23 @@ The current synthetic laboratory dataset includes five network assets.
 | Total security findings | 6 |
 | High-severity findings | 5 |
 | Medium-severity findings | 1 |
-| Automated unit tests | 17 passed |
+| Automated unit tests | 25 passed |
 
-The findings demonstrate the behavior of the assessment engine using controlled laboratory inputs.
+### Findings by Assessment Rule
+
+| Rule ID | Findings |
+|---|---:|
+| NET-001 | 2 |
+| NET-002 | 2 |
+| NET-003 | 1 |
+| NET-004 | 1 |
+| **Total** | **6** |
+
+The findings demonstrate the behavior of the assessment and reporting engines using controlled laboratory inputs.
 
 **These results are not evidence of vulnerabilities in a production network.**
 
-## 11. Development Milestones
+## 12. Development Milestones
 
 ### Milestone 01 — Network Asset Inventory
 
@@ -211,22 +326,36 @@ The findings demonstrate the behavior of the assessment engine using controlled 
 
 ### Milestone 02 — Network Security Assessment
 
-**Implementation and tests validated**
+**Completed and integrated into `main`**
 
 - Security configuration ingestion.
 - Four rule-based security checks.
 - Structured security findings.
 - Expanded test suite: 17 passing tests.
-- Technical documentation and Git consolidation in progress.
+- Technical documentation.
+- Project structure image.
+- Implementation commit: `14e9725`.
 
-## 12. Roadmap
+### Milestone 03 — Security Metrics & JSON Reporting
+
+**Implementation and automated tests validated; documentation and Git consolidation in progress**
+
+- Security metric aggregation.
+- Unique affected asset counting.
+- Finding distribution by severity and rule.
+- JSON report generation.
+- Eight additional automated tests.
+- Expanded test suite: 25 passing tests.
+- Reporting documentation being finalized.
+
+## 13. Roadmap
 
 - [x] Network asset inventory engine
 - [x] IPv4 and duplicate validation
 - [x] Asset classification and inventory metrics
 - [x] Rule-based security assessment engine
 - [x] Automated unit tests for implemented functionality
-- [ ] Security metrics and JSON reporting
+- [x] Security metrics and JSON reporting implementation
 - [ ] Asset configuration coverage analysis
 - [ ] Contextual risk prioritization
 - [ ] Security dashboard and visualization
@@ -234,7 +363,7 @@ The findings demonstrate the behavior of the assessment engine using controlled 
 - [ ] Optional LibreNMS integration
 - [ ] GitHub Actions continuous integration
 
-## 13. Known Limitations
+## 14. Known Limitations
 
 - No live network discovery or scanning.
 - No direct SNMP collection.
@@ -246,20 +375,33 @@ The findings demonstrate the behavior of the assessment engine using controlled 
 - No persistent findings database.
 - No remediation tracking.
 - No graphical dashboard in the current implementation.
+- No contextual risk scoring in the reporting module.
+- JSON reports do not currently include schema version identifiers or execution timestamps.
+- Reporting output is generated locally and is not automatically distributed.
 
-## 14. Security and Ethical Considerations
+## 15. Security and Ethical Considerations
 
-This project is intended for educational use and authorized security engineering laboratories.
+This project is intended for educational use and authorized Security Engineering laboratories.
 
 - All sample asset and configuration records are synthetic.
 - Sample IPv4 addresses use documentation-reserved address space.
 - No production credentials or sensitive infrastructure data are included.
 - No network scanning or device configuration changes are performed.
 - Assessment findings are based on declared data rather than independently verified device states.
+- Generated reports are classified as synthetic laboratory output.
 - Future network discovery capabilities will be restricted to explicitly authorized environments.
 
-## 15. Future Development
+## 16. Future Development
 
-The project is intended to evolve into a broader network security visibility solution that integrates asset discovery, configuration assessment, contextual risk analysis, security metrics, and reporting.
+The project is intended to evolve into a broader network security visibility solution that integrates:
 
-The engineering objective is to demonstrate how network infrastructure information can support asset governance, security monitoring, and risk-informed decisions.
+- Authorized asset discovery and inventory enrichment.
+- Network configuration security assessment.
+- Asset configuration coverage analysis.
+- Contextual risk prioritization.
+- Security metrics and trend analysis.
+- Dashboard visualization.
+- Automated reporting and continuous integration.
+- Integration with network monitoring platforms.
+
+The engineering objective is to demonstrate how network infrastructure information can support asset governance, security monitoring, measurable security posture, and risk-informed decisions.

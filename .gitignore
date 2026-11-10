@@ -6,3 +6,4 @@ __pycache__/
 htmlcov/
 .env
 .vscode/
+security-report.json
