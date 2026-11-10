@@ -4,7 +4,7 @@
 
 A Security Engineering portfolio project demonstrating how structured network asset information can support infrastructure visibility, security configuration assessment, measurable security indicators, and risk-informed decision-making.
 
-> **Project status:** Milestones 01 and 02 completed and integrated into `main`. Milestone 03 — Security Metrics & JSON Reporting — implementation and automated tests validated. Documentation and Git consolidation in progress.
+> **Project status:** Milestones 01, 02, and 03 completed, validated, and published on GitHub. The project currently includes network asset inventory, rule-based security assessment, security metrics, JSON reporting, and 25 passing unit tests.
 
 ## 1. Project Overview
 
@@ -14,7 +14,7 @@ This project provides an extensible Python-based foundation for network asset in
 
 The current implementation processes synthetic CSV datasets, validates asset information, evaluates declared security configurations, generates structured findings, calculates security metrics, and exports JSON reports.
 
-**Key objectives:**
+### Key Objectives
 
 - Establish a consistent and validated network asset inventory.
 - Identify potentially insecure network management configurations.
@@ -56,7 +56,7 @@ The current implementation processes synthetic CSV datasets, validates asset inf
 
 ### Automated Validation
 
-- **25 Python unit tests passing.**
+- **25 Python unit tests passing in the latest local validation.**
 - Inventory validation tests.
 - Security configuration and assessment tests.
 - Reporting and metric aggregation tests.
@@ -66,6 +66,8 @@ The current implementation processes synthetic CSV datasets, validates asset inf
 
 ## 3. Architecture
 
+### Security Reporting Workflow
+
 ![Security Reporting Workflow](docs/images/reporting-flow.png)
 
 The current processing workflow consists of five stages:
@@ -73,18 +75,22 @@ The current processing workflow consists of five stages:
 1. **Asset Inventory:** Load and validate the network asset dataset.
 2. **Security Configuration:** Load and validate declared management settings.
 3. **Assessment Engine:** Evaluate security rules and associate findings with known assets.
-4. **Metrics Aggregation:** Calculate asset coverage indicators and finding distributions.
-5. **JSON Reporting:** Export structured security metrics and findings.
+4. **Metrics Aggregation:** Calculate total assets, uniquely affected assets, and finding distributions by severity and rule.
+5. **JSON Reporting:** Export structured security metrics and individual findings.
 
-The current implementation runs locally without a database, network scanner, or external service.
+The implementation runs locally without a database, network scanner, or external service.
+
+The architecture separates inventory processing, security assessment, and reporting responsibilities to support future enhancements and maintainability.
 
 ## 4. Project Structure
 
 ![Network Security and Asset Visibility — Project Structure](docs/images/project-structure.png)
 
-*Project directory organization, including source modules, automated tests, documentation, and synthetic laboratory data.*
+*Repository organization showing source modules, automated tests, documentation, and synthetic laboratory data.*
 
-The project structure image illustrates the repository organization. The reporting module and its tests were added during Milestone 03 and should be reflected in the next revision of this image.
+The project follows a modular Python structure, separating business logic, automated tests, documentation, and sample datasets.
+
+The project structure illustration may be updated as additional modules are introduced.
 
 ## 5. Technology Stack
 
@@ -94,6 +100,7 @@ The project structure image illustrates the repository organization. The reporti
 | Python Standard Library | CSV processing, IP validation, metric aggregation, and JSON export |
 | unittest | Automated testing |
 | Git | Version control |
+| GitHub | Source code hosting and project documentation |
 | PowerShell | Local development and test execution |
 | JSON | Structured security report output |
 
@@ -109,14 +116,10 @@ No third-party Python packages are required by the current implementation.
 
 ### Clone the Repository
 
-After the GitHub repository has been published:
-
 ```powershell
-git clone <REPOSITORY_URL>
+git clone https://github.com/andersonmartinscyber/network-security-asset-visibility.git
 cd network-security-asset-visibility
 ```
-
-Alternatively, open an existing local project directory.
 
 ### Create and Activate a Virtual Environment
 
@@ -141,7 +144,7 @@ $env:PYTHONPATH = (Resolve-Path .\src).Path
 python -m unittest discover -s tests -v
 ```
 
-**Latest validated execution:**
+### Latest Validated Execution
 
 ```text
 Ran 25 tests
@@ -151,7 +154,7 @@ OK
 
 All 25 tests passed in the latest local validation.
 
-The suite includes:
+### Test Coverage by Module
 
 | Test Module | Passing Tests |
 |---|---:|
@@ -159,6 +162,8 @@ The suite includes:
 | `test_security_assessment.py` | 12 |
 | `test_reporting.py` | 8 |
 | **Total** | **25** |
+
+The test suite validates expected behavior, input handling, assessment rules, metric calculations, and JSON report consistency.
 
 ## 8. Running the Security Assessment
 
@@ -191,7 +196,7 @@ print(f"Total findings: {len(findings)}")
 '@ | python -
 ```
 
-The assessment evaluates the declared configurations and prints structured findings.
+The assessment evaluates declared configurations and prints structured findings.
 
 No live network connections are performed.
 
@@ -208,7 +213,7 @@ The rule severities are predefined and do not represent CVSS calculations.
 
 SSH being disabled is treated as a configuration review indicator, not proof that a device lacks secure management access.
 
-For rule descriptions, recommendations, and limitations, see [Security Assessment Documentation](docs/SECURITY_ASSESSMENT.md).
+For detailed rule descriptions, recommendations, and limitations, see [Security Assessment Documentation](docs/SECURITY_ASSESSMENT.md).
 
 ## 10. Generating Security Metrics & JSON Reports
 
@@ -288,6 +293,8 @@ For implementation details, test coverage, and limitations, see [Security Report
 
 The current synthetic laboratory dataset includes five network assets.
 
+### Security Assessment Summary
+
 | Metric | Validated Result |
 |---|---:|
 | Total network assets | 5 |
@@ -315,7 +322,7 @@ The findings demonstrate the behavior of the assessment and reporting engines us
 
 ### Milestone 01 — Network Asset Inventory
 
-**Completed**
+**Completed and published**
 
 - Initial project structure.
 - CSV inventory ingestion.
@@ -338,7 +345,7 @@ The findings demonstrate the behavior of the assessment and reporting engines us
 
 ### Milestone 03 — Security Metrics & JSON Reporting
 
-**Implementation and automated tests validated; documentation and Git consolidation in progress**
+**Completed and integrated into `main`**
 
 - Security metric aggregation.
 - Unique affected asset counting.
@@ -346,7 +353,9 @@ The findings demonstrate the behavior of the assessment and reporting engines us
 - JSON report generation.
 - Eight additional automated tests.
 - Expanded test suite: 25 passing tests.
-- Reporting documentation being finalized.
+- Technical reporting documentation.
+- Security reporting workflow diagram.
+- Implementation commit: `2aade49`.
 
 ## 13. Roadmap
 
@@ -405,3 +414,13 @@ The project is intended to evolve into a broader network security visibility sol
 - Integration with network monitoring platforms.
 
 The engineering objective is to demonstrate how network infrastructure information can support asset governance, security monitoring, measurable security posture, and risk-informed decisions.
+
+---
+
+**Repository:** https://github.com/andersonmartinscyber/network-security-asset-visibility
+
+**Current release scope:** Milestones 01–03 — Network Asset Inventory, Security Assessment, and JSON Reporting.
+
+**Validation:** 25 passing automated unit tests in the latest local execution.
+
+**Data classification:** Synthetic laboratory data.
