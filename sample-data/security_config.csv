@@ -1,0 +1,6 @@
+﻿asset_id,snmp_version,telnet_enabled,ssh_enabled,monitoring_enabled
+NET-SW-001,3,false,true,true
+NET-SW-002,2c,true,true,true
+NET-FW-001,3,false,true,true
+NET-RT-001,1,true,false,false
+NET-SRV-001,none,false,true,true
