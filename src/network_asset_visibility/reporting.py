@@ -1,4 +1,3 @@
-
 """Security metrics and JSON reporting."""
 
 import json
@@ -7,6 +6,9 @@ from pathlib import Path
 
 from network_asset_visibility.coverage import (
     analyze_configuration_coverage,
+)
+from network_asset_visibility.risk_prioritization import (
+    prioritize_findings,
 )
 
 
@@ -57,8 +59,9 @@ def export_security_report(
     findings,
     output_path,
     configs=None,
+    include_risk_prioritization=False,
 ):
-    """Export security metrics and findings to a JSON file."""
+    """Export security metrics and optional risk prioritization to JSON."""
 
     metrics = generate_security_metrics(
         assets,
@@ -73,9 +76,25 @@ def export_security_report(
         "findings": findings,
     }
 
+    if include_risk_prioritization:
+        prioritized_findings = prioritize_findings(findings)
+
+        report["risk_prioritization"] = {
+            "method": "contextual_weighted_score",
+            "severity_weight": 0.60,
+            "asset_criticality_weight": 0.40,
+            "total_prioritized_findings": len(prioritized_findings),
+            "findings": prioritized_findings,
+        }
+
     path = Path(output_path)
 
     with path.open("w", encoding="utf-8") as file:
-        json.dump(report, file, indent=2, ensure_ascii=False)
+        json.dump(
+            report,
+            file,
+            indent=2,
+            ensure_ascii=False,
+        )
 
     return report
