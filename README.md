@@ -1,10 +1,10 @@
 # Network Security & Asset Visibility
 
-**Python-based Network Security Engineering | Asset Inventory | Security Configuration Assessment | Configuration Coverage | Contextual Risk Prioritization | JSON Reporting**
+**Python-based Network Security Engineering | Asset Inventory | Security Configuration Assessment | Configuration Coverage | Contextual Risk Prioritization | JSON Reporting | Interactive Security Dashboard**
 
 A Security Engineering portfolio project demonstrating how structured network asset data supports infrastructure visibility, rule-based security assessment, configuration coverage measurement, contextual risk prioritization, and reproducible security reporting.
 
-> **Project status:** Milestones 01–04 and GitHub Actions CI are integrated into `main`. Milestone 05 — Security Risk Prioritization — is implemented and validated locally on `feature/security-risk-prioritization`, pending commit, remote CI validation, and merge. The complete local test suite passes **54 tests**.
+> **Project status:** Milestones 01–05 are integrated into `main`. Milestone 06 — Security Dashboard & Visualization — is validated locally on `feature/security-dashboard` (97 passing tests), pending remote CI and merge.
 
 ## 1. Project Overview
 
@@ -22,7 +22,7 @@ This project provides a modular, Python-based foundation for network asset inven
 - Produce reproducible metrics and machine-readable reports.
 - Demonstrate automated testing and continuous integration practices.
 - Prioritize findings using a transparent, deterministic contextual scoring model.
-- Establish a foundation for dashboards and authorized network discovery.
+- Provide interactive security visualization and establish a foundation for authorized network discovery.
 
 ## 2. Implemented Features
 
@@ -78,13 +78,22 @@ This project provides a modular, Python-based foundation for network asset inven
 
 **Important:** Contextual risk scores are project-specific heuristics, not official CVSS scores or empirically validated exploitation probabilities.
 
+### Security Dashboard & Visualization — Milestone 06
+
+- Streamlit interface with Plotly charts and Pandas data transformation.
+- Validated JSON ingestion and contextual risk consistency checks.
+- Global indicators, severity and priority distributions, rule counts and affected-asset ranking.
+- Combined severity, asset and priority filters; filtered CSV export.
+- Report refresh, custom visual identity and graceful handling of missing reports.
+- 31 data-layer tests and 12 Streamlit AppTest scenarios.
+
 ### Automated Validation and CI
 
-- **54 automated tests passing locally**, including 15 tests added during Milestone 05.
+- **97 automated tests passing locally**, including 43 added during Milestone 06.
 - Inventory, assessment, coverage, risk prioritization, and reporting validation.
 - Edge cases covering duplicate records, invalid references, empty datasets, and JSON export.
 - GitHub Actions workflow configured for Python 3.14 on Ubuntu.
-- Successful GitHub Actions CI executions confirmed for the Milestone 04 merge on `main`. Milestone 05 has not yet been validated by remote CI.
+- CI installs dashboard dependencies, validates TOML and executes the full suite. Updated workflow awaits remote validation.
 
 ## 3. Architecture
 
@@ -100,9 +109,11 @@ The project processes data through these logical stages:
 4. **Configuration Coverage:** Compare inventory assets with available configuration records and identify gaps.
 5. **Metrics Aggregation:** Calculate asset, finding, and optional coverage indicators.
 6. **Risk Prioritization (optional):** Score and order findings using severity and asset criticality.
-7. **JSON Reporting:** Export structured metrics, findings, and optional risk prioritization for downstream analysis.
+7. **JSON Reporting:** Export structured metrics, findings, and optional risk prioritization.
+8. **Dashboard Data:** Validate the report and derive visualization metrics.
+9. **Dashboard:** Present interactive charts, rankings and filtered CSV export.
 
-The existing workflow diagram illustrates the original reporting pipeline. Configuration coverage and optional risk prioritization extend this pipeline; the diagram has not yet been updated to show these additions.
+The workflow diagram includes configuration coverage, optional prioritization and the dashboard layer.
 
 The implementation runs locally, without a database, live network scanner, or external service.
 
@@ -112,7 +123,7 @@ The implementation runs locally, without a database, live network scanner, or ex
 
 The repository separates source modules, tests, technical documentation, and synthetic datasets.
 
-Key files introduced or updated in Milestones 04–05:
+Key files introduced or updated in Milestones 04–06:
 
 | File | Purpose |
 |---|---|
@@ -123,8 +134,12 @@ Key files introduced or updated in Milestones 04–05:
 | `src/network_asset_visibility/risk_prioritization.py` | Contextual risk scoring, classification, and ordering |
 | `tests/test_risk_prioritization.py` | Risk scoring and JSON integration tests |
 | `docs/RISK_PRIORITIZATION.md` | Scoring methodology, results, and limitations |
-
-The existing project structure illustration predates Milestones 04–05 and will be updated in a subsequent documentation revision.
+| `src/network_asset_visibility/dashboard_data.py` | Report validation and dashboard metrics |
+| `dashboard.py` | Interactive Streamlit interface |
+| `tests/test_dashboard_data.py` | Data-layer validation tests |
+| `tests/test_dashboard_app.py` | Streamlit interface tests |
+| `.streamlit/config.toml` | Dashboard theme and telemetry configuration |
+| `docs/DASHBOARD.md` | Dashboard documentation |
 
 ## 5. Technology Stack
 
@@ -138,8 +153,11 @@ The existing project structure illustration predates Milestones 04–05 and will
 | GitHub Actions | Automated tests on supported repository events |
 | PowerShell | Local development and execution |
 | JSON | Machine-readable security reporting |
+| Streamlit | Dashboard and AppTest |
+| Plotly | Interactive visualization |
+| Pandas | Tabular data and CSV export |
 
-No third-party Python packages are required by the current implementation.
+Dashboard dependencies are defined in `requirements.txt`: Streamlit, Plotly and Pandas.
 
 ## 6. Getting Started
 
@@ -156,13 +174,19 @@ git clone https://github.com/andersonmartinscyber/network-security-asset-visibil
 cd network-security-asset-visibility
 ```
 
-> **Milestone 05 availability:** The default `main` branch includes Milestones 01–04. Milestone 05 is currently validated on the local `feature/security-risk-prioritization` branch and will become available remotely after it is pushed.
+> Milestone 06 is currently on the feature branch; the published baseline includes Milestones 01–05.
 
 ### Create and Activate a Virtual Environment
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
+```
+
+### Install Dependencies
+
+```powershell
+python -m pip install -r requirements.txt
 ```
 
 ### Configure the Python Module Path
@@ -180,11 +204,11 @@ $env:PYTHONPATH = (Resolve-Path .\src).Path
 python -m unittest discover -s tests -v
 ```
 
-### Latest Local Validation — Milestone 05 Feature Branch
+### Latest Local Validation — Milestone 06 Feature Branch
 
 ```text
 ----------------------------------------------------------------------
-Ran 54 tests in 0.053s
+Ran 97 tests in 5.095s
 
 OK
 ```
@@ -196,9 +220,11 @@ OK
 | `test_reporting.py` | 8 |
 | `test_coverage.py` | 14 |
 | `test_risk_prioritization.py` | 15 |
-| **Total** | **54** |
+| `test_dashboard_data.py` | 31 |
+| `test_dashboard_app.py` | 12 |
+| **Total** | **97** |
 
-The 54-test result was verified locally. Remote GitHub Actions validation for Milestone 05 is pending.
+The 97-test result was verified locally. Remote GitHub Actions validation for Milestone 06 is pending.
 
 ## 8. Running the Security Assessment
 
@@ -305,7 +331,7 @@ See [Asset Configuration Coverage Documentation](docs/CONFIGURATION_COVERAGE.md)
 
 ## 11. Generating Security Metrics & JSON Reports
 
-The reporting module exports aggregated security metrics and individual findings. It can include configuration coverage metrics when `configs` is provided and, on the Milestone 05 feature branch, a prioritized findings section when `include_risk_prioritization=True`.
+The reporting module exports aggregated security metrics and individual findings. It can include configuration coverage metrics when `configs` is provided and, with Milestone 05 and later, a prioritized findings section when `include_risk_prioritization=True`.
 
 ### Core Metrics
 
@@ -402,7 +428,7 @@ Priority thresholds are **Critical >= 85**, **High >= 65**, **Medium >= 40**, an
 
 ### Generate a Prioritized JSON Report
 
-Run this command on the Milestone 05 feature branch:
+Run this command from the project root:
 
 ```powershell
 $env:PYTHONPATH = (Resolve-Path .\src).Path
@@ -441,6 +467,28 @@ The generated report includes `risk_prioritization.method`, scoring weights, the
 
 See [Risk Prioritization Documentation](docs/RISK_PRIORITIZATION.md) for methodology, testing, and limitations.
 
+## 12.1 Running the Security Dashboard
+
+Generate the prioritized JSON report using the command in Section 12. Then run:
+
+```powershell
+$env:PYTHONPATH = (Resolve-Path .\src).Path
+python -m streamlit run dashboard.py --server.address 127.0.0.1 --server.port 8501
+```
+
+Open http://127.0.0.1:8501. Global indicators remain unchanged when findings are filtered. Refresh Report reloads the generated report; it does not perform a new assessment.
+
+![Dashboard overview](docs/images/dash01.png)
+
+![Dashboard additional sections](docs/images/dash02.png)
+
+| Affected asset | Findings | Maximum contextual score |
+|---|---:|---:|
+| BRANCH-RT-01 | 4 | 75.0 |
+| ACCESS-SW-01 | 2 | 65.0 |
+
+See [Dashboard Documentation](docs/DASHBOARD.md).
+
 ## 13. Laboratory Validation Results
 
 The current synthetic laboratory dataset contains five assets and five matching configuration records.
@@ -455,7 +503,7 @@ The current synthetic laboratory dataset contains five assets and five matching 
 | Total security findings | 6 |
 | High-severity findings | 5 |
 | Medium-severity findings | 1 |
-| Automated tests (local) | 54 passed |
+| Automated tests (local) | 97 passed |
 | Findings with contextual risk prioritization | 6 |
 | High-priority findings | 5 |
 | Medium-priority findings | 1 |
@@ -541,7 +589,7 @@ These results are generated from synthetic laboratory inputs and are not evidenc
 
 ### Milestone 05 — Security Risk Prioritization
 
-**Implemented and validated locally; pending commit, remote CI validation, and merge**
+**Completed and integrated into `main` via Pull Request #3 (`8c59a5e`)**
 
 - Weighted contextual scoring based on finding severity and asset criticality.
 - Deterministic finding ranking and risk priority classification.
@@ -549,6 +597,15 @@ These results are generated from synthetic laboratory inputs and are not evidenc
 - Fifteen additional automated tests.
 - Expanded local test suite: 54 passing tests.
 - Technical methodology and laboratory results documented.
+
+### Milestone 06 — Security Dashboard & Visualization
+
+**Implemented and validated locally; pending commit, remote CI validation and merge**
+
+- JSON report validation and interactive dashboard.
+- Global metrics, contextual risk charts, asset ranking and filtered CSV export.
+- 43 additional automated tests (97 total) and 10 manual acceptance checks.
+- Updated CI and documentation.
 
 ## 15. Roadmap
 
@@ -559,10 +616,11 @@ These results are generated from synthetic laboratory inputs and are not evidenc
 - [x] Security metrics and JSON reporting.
 - [x] GitHub Actions continuous integration for the published baseline.
 - [x] Asset configuration coverage, CI validation, and merge into `main`.
-- [ ] Updated architecture and project structure diagrams reflecting coverage and prioritization.
+- [x] Updated architecture and project structure diagrams.
 - [x] Contextual risk prioritization implementation and local tests.
-- [ ] Milestone 05 remote CI validation and merge into `main`.
-- [ ] Security dashboard and visualization.
+- [x] Milestone 05 merge into `main`.
+- [x] Security dashboard and visualization implementation and local validation.
+- [ ] Milestone 06 remote CI validation and merge.
 - [ ] Configuration freshness analysis and historical coverage trends.
 - [ ] Authorized SNMPv3 laboratory integration.
 - [ ] Optional LibreNMS integration.
@@ -579,7 +637,9 @@ These results are generated from synthetic laboratory inputs and are not evidenc
 - No device-specific security baseline evaluation.
 - No persistent findings database or historical coverage tracking.
 - No remediation tracking.
-- No graphical dashboard in the current implementation.
+- Dashboard requires a generated JSON report; no live collection or authentication.
+- Report consistency checks do not establish cryptographic authenticity.
+- CSV export is validated manually.
 - Contextual risk scoring is heuristic and does not incorporate exploitability, threat intelligence, network exposure, or compensating controls.
 - JSON reports do not currently include schema version identifiers or execution timestamps.
 - Reporting output is generated locally and is not automatically distributed.
@@ -598,14 +658,14 @@ This project is intended for educational use and authorized Security Engineering
 
 ## 18. Future Development
 
-Planned enhancements include authorized asset discovery, inventory enrichment, configuration freshness checks, configurable risk scoring, historical metrics, dashboards, automated reporting, and integration with network monitoring platforms.
+Planned enhancements include authorized asset discovery, inventory enrichment, configuration freshness checks, configurable risk scoring, historical metrics, dashboard enhancements, automated reporting, and integration with network monitoring platforms.
 
 The engineering objective is to demonstrate how network infrastructure information can support asset governance, security monitoring, assessment completeness, measurable security posture, and risk-informed decisions.
 
 ---
 
 **Repository:** https://github.com/andersonmartinscyber/network-security-asset-visibility
-**Current published baseline:** Milestones 01–04 and GitHub Actions CI
-**Current feature-branch scope:** Milestone 05 — Security Risk Prioritization
-**Latest local validation:** 54 passing tests
+**Current published baseline:** Milestones 01–05 and GitHub Actions CI
+**Current feature-branch scope:** Milestone 06 — Security Dashboard & Visualization
+**Latest local validation:** 97 passing tests
 **Data classification:** Synthetic laboratory data
